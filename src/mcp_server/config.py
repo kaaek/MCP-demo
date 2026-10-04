@@ -31,7 +31,7 @@ def load_settings() -> Settings:
         AUDIT_LOG (./logs/audit.jsonl).
     """
     return Settings(
-        host=os.environ.get("MCP_HOST", "127.0.0.1"),
+        host=os.environ.get("MCP_HOST", "0.0.0.0"),
         port=int(os.environ.get("MCP_PORT", "8000")),
         workspace_dir=Path(os.environ.get("WORKSPACE_DIR", "workspace")).resolve(),
         db_path=Path(os.environ.get("DB_PATH", "data/research.db")).resolve(),
