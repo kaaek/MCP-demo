@@ -50,9 +50,16 @@ tool actually does.
 - `triage_incident(incident_id)`: DB query → IP enrichment → `remember`
 - `summarize_audit_log()`: the model reviews the server's own audit log
 
-## Protocol notes (observed with FastMCP 4.0 / MCP 2026-07-28)
+## Protocol notes (FastMCP 4.0.11, MCP SDK 2.3.0)
 
-- The client opens with `server/discover` instead of `initialize`. Every POST
+- The protocol version is chosen by the **client**, not the server. The client
+  sends `mcp-protocol-version` on every HTTP request (it is a client-to-server
+  header per the MCP transport spec), and the server only validates it, so
+  responses do not carry a version header. The server supports every revision
+  from `2024-11-05` to `2026-07-28`. Observed: Claude Desktop sends
+  `2025-11-25` (handshake era), while FastMCP's own client (`demo_client.py`)
+  sends `2026-07-28`.
+- The notes below describe the `2026-07-28` flow. The client opens with `server/discover` instead of `initialize`. Every POST
   carries the `mcp-protocol-version` and `mcp-method` headers.
 - Responses are `application/json` unless the tool sends notifications
   (progress or logging). Those responses become `text/event-stream`.

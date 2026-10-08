@@ -6,7 +6,7 @@ readme = "README.md"
 requires-python = ">=3.11"
 authors = [{ name = "Khalil El Kaaki", email = "khalil.el.kaaki@gmail.com" }]
 dependencies = [
-    "fastmcp>=4.0",
+    "fastmcp>=4.0.11",
     "httpx>=0.27",
     "dnspython>=2.6",
 ]
