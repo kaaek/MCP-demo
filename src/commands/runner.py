@@ -13,19 +13,24 @@ def _text(value: str | bytes | None) -> str:
 
 
 def run_command(command: str, timeout: float = 30.0, cwd: str | None = None, max_chars: int = 50_000) -> dict:
-    """Run ``command`` through the shell and capture exit code, stdout and stderr."""
+    """Run ``command`` through the shell and capture exit code, stdout and stderr.
+
+    Raises ``RuntimeError`` on a non-zero exit (including a missing binary, exit 127)
+    and ``TimeoutError`` if the command outlives ``timeout``.
+    """
     try:
         proc = subprocess.run(command, shell=True, capture_output=True, text=True, timeout=timeout, cwd=cwd)
-        exit_code, timed_out, out, err = proc.returncode, False, proc.stdout, proc.stderr
     except subprocess.TimeoutExpired as exc:
-        exit_code, timed_out, out, err = None, True, exc.stdout, exc.stderr
-    return {
-        "command": command,
-        "exit_code": exit_code,
-        "timed_out": timed_out,
-        "stdout": _text(out)[:max_chars],
-        "stderr": _text(err)[:max_chars],
-    }
+        raise TimeoutError(
+            f"command timed out after {timeout}s: {command}\n"
+            f"stdout: {_text(exc.stdout)[:max_chars]}\nstderr: {_text(exc.stderr)[:max_chars]}"
+        ) from exc
+    out, err = _text(proc.stdout)[:max_chars], _text(proc.stderr)[:max_chars]
+    if proc.returncode != 0:
+        raise RuntimeError(
+            f"command exited with code {proc.returncode}: {command}\nstdout: {out}\nstderr: {err}"
+        )
+    return {"command": command, "exit_code": 0, "stdout": out, "stderr": err}
 
 
 async def stream_command(args: list[str], timeout: float = 60.0) -> AsyncIterator[str]:

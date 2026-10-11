@@ -31,10 +31,15 @@ def test_tcp_port_check_local():
 
 
 def test_run_command():
-    """Shell commands run with exit code and output captured; timeouts are reported."""
-    out = run_command("echo hi && exit 3")
-    assert out["stdout"].strip() == "hi" and out["exit_code"] == 3
-    assert run_command("sleep 5", timeout=0.5)["timed_out"] is True
+    """Shell commands run with output captured; failures and timeouts raise."""
+    out = run_command("echo hi")
+    assert out["stdout"].strip() == "hi" and out["exit_code"] == 0
+    with pytest.raises(RuntimeError, match="code 3"):
+        run_command("echo hi && exit 3")
+    with pytest.raises(RuntimeError, match="code 127"):
+        run_command("nonexistent_cmd_xyz")
+    with pytest.raises(TimeoutError):
+        run_command("sleep 5", timeout=0.5)
 
 
 async def test_stream_command():

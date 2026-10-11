@@ -316,7 +316,10 @@ def forget(key: str) -> str:
 
 @mcp.tool(annotations={"readOnlyHint": False, "destructiveHint": True, "openWorldHint": True})
 def run_command(command: str, timeout: float = 30.0) -> dict:
-    """Run a shell command on the server (cwd = workspace) and return exit code, stdout and stderr."""
+    """Run a shell command on the server (cwd = workspace) and return exit code, stdout and stderr.
+
+    Fails (tool error) on a non-zero exit code, a missing binary or a timeout.
+    """
     return commands.run_command(command, timeout, cwd=str(WS))
 
 
