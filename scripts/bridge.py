@@ -16,6 +16,10 @@ async def main(prompt, url):
 
             tools = (await session.list_tools()).tools
             print(f"[server tools] {[t.name for t in tools]}")
+            prompts = (await session.list_prompts()).prompts
+            for p in prompts:
+                args = [a.name + ("*" if a.required else "") for a in p.arguments or []]
+                print(f"[server prompt] {p.name}({', '.join(args)}) - {p.description}")
             ollama_tools = [{
                 "type": "function",
                 "function": {
