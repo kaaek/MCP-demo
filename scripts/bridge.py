@@ -17,16 +17,25 @@ It can also expand a server-side MCP prompt: pass "--prompt <name> key=value ...
 as the prompt argument.
 
 Usage: python bridge.py "your prompt" [server url]
+Set BRIDGE_PROXY=http://127.0.0.1:8080 to route the MCP traffic (not Ollama's)
+through a proxy such as Burp Suite.
 """
-import asyncio, json, sys
+import asyncio, json, os, sys
+import httpx2
 import ollama
 from mcp import ClientSession
 from mcp.client.streamable_http import streamable_http_client
+from mcp.shared._httpx_utils import MCP_DEFAULT_SSE_READ_TIMEOUT, MCP_DEFAULT_TIMEOUT
 
 MODEL = "qwen3-4b-mcp"  # the 8192-context model you built
 
 async def main(prompt, url):
-    async with streamable_http_client(url) as (read, write):
+    proxy = os.environ.get("BRIDGE_PROXY")
+    http_client = httpx2.AsyncClient(
+        proxy=proxy,
+        timeout=httpx2.Timeout(MCP_DEFAULT_TIMEOUT, read=MCP_DEFAULT_SSE_READ_TIMEOUT),
+    ) if proxy else None
+    async with streamable_http_client(url, http_client=http_client) as (read, write):
         async with ClientSession(read, write) as session:
             try:
                 await session.discover()  # 2026-07-28 stateless protocol
