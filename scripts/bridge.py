@@ -1,3 +1,23 @@
+"""MCP client/host that lets a local Ollama model (Qwen) use tools from an MCP server.
+
+Why this script exists: `ollama run` is only a chat client. It sends text to the
+model and prints the reply; it does not speak MCP. A model cannot call tools on
+its own either: it can only emit a structured tool-call request as text, and
+something else must act on it. This script is that something. It:
+
+  1. Connects to the MCP server and lists its tools and prompts.
+  2. Converts the MCP tool schemas to Ollama's `tools` format and passes them
+     to the model so it knows what it can call.
+  3. Detects tool calls in the model's response.
+  4. Executes them on the MCP server via `tools/call`.
+  5. Appends the results to the conversation as `tool` messages and calls the
+     model again, repeating until it answers in plain text (capped at 6 rounds).
+
+It can also expand a server-side MCP prompt: pass "--prompt <name> key=value ..."
+as the prompt argument.
+
+Usage: python bridge.py "your prompt" [server url]
+"""
 import asyncio, json, sys
 import ollama
 from mcp import ClientSession
