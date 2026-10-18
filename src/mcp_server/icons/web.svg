@@ -1,0 +1,6 @@
+<!-- Web/API icon: a globe made of a circle, an equator line, and a meridian ellipse. -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#0ea5e9" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+  <circle cx="12" cy="12" r="9"/>
+  <path d="M3 12h18"/>
+  <ellipse cx="12" cy="12" rx="4" ry="9"/>
+</svg>

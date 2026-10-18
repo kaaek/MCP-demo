@@ -1,0 +1,7 @@
+<!-- Network icon: three nodes joined by lines. Elements later in the file are painted on top. -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#8b5cf6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+  <path d="M12 7v5M12 12L6 17M12 12l6 5"/>
+  <circle cx="12" cy="5" r="2.5"/>
+  <circle cx="5" cy="18" r="2.5"/>
+  <circle cx="19" cy="18" r="2.5"/>
+</svg>
