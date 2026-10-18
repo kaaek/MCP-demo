@@ -1191,6 +1191,7 @@ dependencies = [
     { name = "dnspython" },
     { name = "fastmcp" },
     { name = "httpx" },
+    { name = "httpx2" },
     { name = "ollama" },
 ]
 
@@ -1205,6 +1206,7 @@ requires-dist = [
     { name = "dnspython", specifier = ">=2.6" },
     { name = "fastmcp", specifier = ">=4.0.11" },
     { name = "httpx", specifier = ">=0.27" },
+    { name = "httpx2", specifier = ">=2.13.1" },
     { name = "ollama", specifier = ">=0.6.3" },
 ]
 
